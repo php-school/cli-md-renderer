@@ -12,6 +12,7 @@ use Kadet\Highlighter\KeyLighter;
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\FencedCode;
 use AydinHassan\CliMdRenderer\Renderer\FencedCodeRenderer;
+use League\CommonMark\Environment;
 
 class FencedCodeRendererTest extends AbstractRendererTest implements RendererTestInterface
 {
@@ -53,9 +54,9 @@ class FencedCodeRendererTest extends AbstractRendererTest implements RendererTes
             ->method('getInfoWords')
             ->willReturn(['php']);
 
-        $color          = new Color();
+        $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer    = new CliRenderer([], [], $color);
+        $cliRenderer = new CliRenderer(new Environment(), $color);
 
         $this->assertEquals(
             "    \e[93;1m<?php\e[0m \e[33mecho\e[0m \e[32m'Hello World'\e[0m\e[33m;\e[0m\e[0m\e[0m\n    ",
@@ -80,9 +81,9 @@ class FencedCodeRendererTest extends AbstractRendererTest implements RendererTes
             ->method('getInfoWords')
             ->willReturn(['js']);
 
-        $color          = new Color();
+        $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer    = new CliRenderer([], [], $color);
+        $cliRenderer = new CliRenderer(new Environment(), $color);
 
         $this->assertEquals(
             '    [33mconsole.log("lol js???")[0m',

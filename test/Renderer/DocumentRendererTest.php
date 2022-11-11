@@ -9,6 +9,7 @@ use AydinHassan\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\Document;
 use League\CommonMark\Block\Element\Paragraph;
+use League\CommonMark\Environment;
 
 class DocumentRendererTest extends AbstractRendererTest implements RendererTestInterface
 {
@@ -19,16 +20,15 @@ class DocumentRendererTest extends AbstractRendererTest implements RendererTestI
 
     public function testRender(): void
     {
-        $class          = $this->getRendererClass();
-        $renderer       = new $class();
-        $doc            = new Document();
+        $class = $this->getRendererClass();
+        $renderer = new $class();
+        $doc = new Document();
         $doc->appendChild(new Paragraph());
 
-        $color          = new Color();
+        $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer    = new CliRenderer([
-            Paragraph::class => new ParagraphRenderer()
-        ], [], $color);
+        $environment = (new Environment())->addBlockRenderer(Paragraph::class, new ParagraphRenderer());
+        $cliRenderer = new CliRenderer($environment, $color);
 
         $this->assertEquals(
             "\n\n",

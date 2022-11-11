@@ -16,9 +16,9 @@ use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use AydinHassan\CliMdRenderer\CliRendererFactory;
 
-$parser       = new DocParser(Environment::createCommonMarkEnvironment());
-$cliRenderer  = (new CliRendererFactory)->__invoke();
-$ast          = $parser->parse(file_get_contents('path/to/file.md'));
+$parser = new DocParser(Environment::createCommonMarkEnvironment());
+$cliRenderer = (new CliRendererFactory)->__invoke();
+$ast = $parser->parse(file_get_contents('path/to/file.md'));
 
 echo $cliRenderer->renderBlock($ast);
 ```
@@ -37,7 +37,6 @@ use AydinHassan\CliMdRenderer\Renderer\FencedCodeRenderer;
 
 $codeRenderer = new FencedCodeRenderer;
 $codeRenderer->addSyntaxHighlighter('js', new JsSyntaxHighlighter);
-
 ```
 
 If you need to do this you cannot use the factory so construction will look something like:
@@ -46,60 +45,16 @@ If you need to do this you cannot use the factory so construction will look some
 <?php 
 require_once 'vendor/autoload.php';
 
-use AydinHassan\CliMdRenderer\Highlighter\PhpHighlighter;
-use AydinHassan\CliMdRenderer\InlineRenderer\LinkRenderer;
-use AydinHassan\CliMdRenderer\Renderer\DocumentRenderer;
-use AydinHassan\CliMdRenderer\Renderer\FencedCodeRenderer;
-use AydinHassan\CliMdRenderer\Renderer\HeaderRenderer;
-use AydinHassan\CliMdRenderer\Renderer\HorizontalRuleRenderer;
-use AydinHassan\CliMdRenderer\Renderer\ParagraphRenderer;
 use Colors\Color;
-use Kadet\Highlighter\KeyLighter;
-use League\CommonMark\Block\Element\Document;
-use League\CommonMark\Block\Element\Header;
-use League\CommonMark\Block\Element\HorizontalRule;
-use League\CommonMark\Block\Element\Paragraph;
-use League\CommonMark\Block\Element\FencedCode;
-use AydinHassan\CliMdRenderer\InlineRenderer\TextRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\CodeRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\EmphasisRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\StrongRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\NewlineRenderer;
-use League\CommonMark\Inline\Element\Link;
-use League\CommonMark\Inline\Element\Text;
-use League\CommonMark\Inline\Element\Code;
-use League\CommonMark\Inline\Element\Emphasis;
-use League\CommonMark\Inline\Element\Strong;
-use League\CommonMark\Inline\Element\Newline;
+use League\CommonMark\Environment;
 
-$codeRender = new FencedCodeRenderer();
-$keyLighter = new KeyLighter;
-$keyLighter->init();
-$codeRender->addSyntaxHighlighter('php', new PhpHighlighter($keyLighter));
-$codeRender->addSyntaxHighlighter('js', new JsSyntaxHighlighter);
+$environment = new Environment();
+$environment->addExtension(new CliExtension());
 
-$blockRenderers = [
-    Document::class         => new DocumentRenderer,
-    Header::class           => new HeaderRenderer,
-    HorizontalRule::class   => new HorizontalRuleRenderer,
-    Paragraph::class        => new ParagraphRenderer,
-    FencedCode::class       => $codeRender,
-];
-
-$inlineBlockRenderers = [
-    Text::class             => new TextRenderer,
-    Code::class             => new CodeRenderer,
-    Emphasis::class         => new EmphasisRenderer,
-    Strong::class           => new StrongRenderer,
-    Newline::class          => new NewlineRenderer,
-    Link::class             => new LinkRenderer,
-];
-
-$colors = new Color;
+$colors = new Color();
 $colors->setForceStyle(true);
 
-return new CliRenderer($blockRenderers, $inlineBlockRenderers, $colors);
-
+return new CliRenderer($environment, $colors);
 ```
 
 

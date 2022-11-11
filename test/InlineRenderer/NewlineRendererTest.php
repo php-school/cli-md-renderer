@@ -6,6 +6,7 @@ use AydinHassan\CliMdRenderer\CliRenderer;
 use AydinHassan\CliMdRenderer\InlineRenderer\NewlineRenderer;
 use AydinHassan\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
+use League\CommonMark\Environment;
 use League\CommonMark\Inline\Element\Newline;
 
 class NewlineRendererTest extends AbstractInlineRendererTest implements RendererTestInterface
@@ -17,13 +18,13 @@ class NewlineRendererTest extends AbstractInlineRendererTest implements Renderer
 
     public function testRender(): void
     {
-        $class          = $this->getRendererClass();
-        $renderer       = new $class();
-        $emphasis       = new Newline();
+        $class = $this->getRendererClass();
+        $renderer = new $class();
+        $emphasis = new Newline();
 
-        $color          = new Color();
+        $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer    = new CliRenderer([], [], $color);
+        $cliRenderer = new CliRenderer(new Environment(), $color);
 
         $this->assertEquals(
             "\n",

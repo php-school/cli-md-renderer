@@ -6,36 +6,39 @@ use AydinHassan\CliMdRenderer\InlineRenderer\CliInlineRendererInterface;
 use AydinHassan\CliMdRenderer\Renderer\CliBlockRendererInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\AbstractBlock;
+use League\CommonMark\Block\Renderer\BlockRendererInterface;
+use League\CommonMark\ElementRendererInterface;
+use League\CommonMark\EnvironmentInterface;
 use League\CommonMark\Inline\Element\AbstractInline;
 use RuntimeException;
 
-class CliRenderer
+class CliRenderer implements ElementRendererInterface
 {
     /**
-     * @var array<CliBlockRendererInterface>
+     * @var EnvironmentInterface
      */
-    private $renderers;
-
-    /**
-     * @var array<CliInlineRendererInterface>
-     */
-    private $inlineRenderers;
+    private $environment;
 
     /**
      * @var Color
      */
     private $color;
 
-    /**
-     * @param array<CliBlockRendererInterface> $renderers
-     * @param array<CliInlineRendererInterface> $inlineRenderers
-     * @param Color $color
-     */
-    public function __construct(array $renderers, array $inlineRenderers, Color $color)
+    public function __construct(EnvironmentInterface $environment, Color $color)
     {
-        $this->color            = $color;
-        $this->renderers        = $renderers;
-        $this->inlineRenderers  = $inlineRenderers;
+        $this->environment = $environment;
+        $this->color = $color;
+    }
+
+    /**
+     * @param string $option
+     * @param mixed  $default
+     *
+     * @return mixed|null
+     */
+    public function getOption(string $option, $default = null)
+    {
+        return $this->environment->getConfig('renderer/' . $option, $default);
     }
 
     /**
@@ -58,41 +61,53 @@ class CliRenderer
         return $this->color->__invoke($string)->apply($colourOrStyle, $string);
     }
 
+    public function renderInline(AbstractInline $inline): string
+    {
+        $renderers = $this->environment->getInlineRenderersForClass(get_class($inline));
+
+        foreach ($renderers as $renderer) {
+            if (($result = $renderer->render($inline, $this)) !== null) {
+                return $result;
+            }
+        }
+
+        throw new RuntimeException(
+            sprintf('Unable to find corresponding renderer for inline type: "%s"', get_class($inline))
+        );
+    }
+
     /**
      * @param AbstractInline[] $inlines
      *
      * @return string
      */
-    public function renderInlines(array $inlines): string
+    public function renderInlines(iterable $inlines): string
     {
         return implode(
             "",
             array_map(
                 function (AbstractInline $inline) {
-                    $renderer = $this->getInlineRendererForClass(get_class($inline));
-                    if (!$renderer) {
-                        throw new RuntimeException(
-                            sprintf('Unable to find corresponding renderer for inline type: "%s"', get_class($inline))
-                        );
-                    }
-
-                    return $renderer->render($inline, $this);
+                    return $this->renderInline($inline);
                 },
                 $inlines
             )
         );
     }
 
-    public function renderBlock(AbstractBlock $block): string
+    public function renderBlock(AbstractBlock $block, bool $inTightList = false): string
     {
-        $renderer = $this->getBlockRendererForClass(get_class($block));
-        if (!$renderer) {
-            throw new RuntimeException(
-                sprintf('Unable to find corresponding renderer for block type: "%s"', get_class($block))
-            );
+        $renderers = $this->environment->getBlockRenderersForClass(\get_class($block));
+
+        /** @var BlockRendererInterface $renderer */
+        foreach ($renderers as $renderer) {
+            if (($result = $renderer->render($block, $this, $inTightList)) !== null) {
+                return $result;
+            }
         }
 
-        return $renderer->render($block, $this);
+        throw new RuntimeException(
+            sprintf('Unable to find corresponding renderer for block type: "%s"', get_class($block))
+        );
     }
 
     /**
@@ -100,7 +115,7 @@ class CliRenderer
      *
      * @return string
      */
-    public function renderBlocks(array $blocks): string
+    public function renderBlocks(iterable $blocks, bool $inTightList = false): string
     {
         return implode(
             "\n",
@@ -111,32 +126,5 @@ class CliRenderer
                 $blocks
             )
         );
-    }
-
-    /**
-     * @param class-string $inlineBlockClass
-     * @return CliInlineRendererInterface|null
-     */
-    private function getInlineRendererForClass(string $inlineBlockClass): ?CliInlineRendererInterface
-    {
-        if (!isset($this->inlineRenderers[$inlineBlockClass])) {
-            return null;
-        }
-
-        return $this->inlineRenderers[$inlineBlockClass];
-    }
-
-    /**
-     * @param class-string $blockClass
-     *
-     * @return CliBlockRendererInterface|null
-     */
-    private function getBlockRendererForClass($blockClass): ?CliBlockRendererInterface
-    {
-        if (!isset($this->renderers[$blockClass])) {
-            return null;
-        }
-
-        return $this->renderers[$blockClass];
     }
 }

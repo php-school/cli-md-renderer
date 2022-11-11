@@ -6,11 +6,11 @@ use AydinHassan\CliMdRenderer\CliRenderer;
 use AydinHassan\CliMdRenderer\InlineRenderer\CodeRenderer;
 use AydinHassan\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
+use League\CommonMark\Environment;
 use League\CommonMark\Inline\Element\Code;
 
 class CodeRendererTest extends AbstractInlineRendererTest implements RendererTestInterface
 {
-
     public function getRendererClass(): string
     {
         return CodeRenderer::class;
@@ -18,12 +18,12 @@ class CodeRendererTest extends AbstractInlineRendererTest implements RendererTes
 
     public function testRender(): void
     {
-        $class          = $this->getRendererClass();
-        $renderer       = new $class();
-        $code           = new Code('SOME CODE');
-        $color          = new Color();
+        $class = $this->getRendererClass();
+        $renderer = new $class();
+        $code = new Code('SOME CODE');
+        $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer    = new CliRenderer([], [], $color);
+        $cliRenderer = new CliRenderer(new Environment(), $color);
 
         $this->assertEquals(
             "[33mSOME CODE[0m",

@@ -6,6 +6,7 @@ use AydinHassan\CliMdRenderer\CliRenderer;
 use AydinHassan\CliMdRenderer\InlineRenderer\TextRenderer;
 use AydinHassan\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
+use League\CommonMark\Environment;
 use League\CommonMark\Inline\Element\Text;
 
 class TextRendererTest extends AbstractInlineRendererTest implements RendererTestInterface
@@ -17,13 +18,13 @@ class TextRendererTest extends AbstractInlineRendererTest implements RendererTes
 
     public function testRender(): void
     {
-        $class          = $this->getRendererClass();
-        $renderer       = new $class();
-        $text           = new Text('HEY');
+        $class = $this->getRendererClass();
+        $renderer = new $class();
+        $text = new Text('HEY');
 
-        $color          = new Color();
+        $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer    = new CliRenderer([], [], $color);
+        $cliRenderer = new CliRenderer(new Environment(), $color);
 
         $this->assertEquals(
             "HEY",
