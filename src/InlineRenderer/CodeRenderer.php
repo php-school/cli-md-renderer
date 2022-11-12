@@ -6,9 +6,8 @@ use AydinHassan\CliMdRenderer\CliRenderer;
 use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\Inline\Element\AbstractInline;
 use League\CommonMark\Inline\Element\Code;
-use League\CommonMark\Inline\Renderer\InlineRendererInterface;
 
-class CodeRenderer implements InlineRendererInterface
+class CodeRenderer implements CliInlineRendererInterface
 {
     public function render(AbstractInline $inline, ElementRendererInterface $renderer): string
     {
