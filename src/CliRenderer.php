@@ -83,6 +83,8 @@ class CliRenderer implements ElementRendererInterface
      */
     public function renderInlines(iterable $inlines): string
     {
+        $inlines = is_array($inlines) ? $inlines : iterator_to_array($inlines);
+
         return implode(
             "",
             array_map(
@@ -117,6 +119,8 @@ class CliRenderer implements ElementRendererInterface
      */
     public function renderBlocks(iterable $blocks, bool $inTightList = false): string
     {
+        $blocks = is_array($blocks) ? $blocks : iterator_to_array($blocks);
+
         return implode(
             "\n",
             array_map(
