@@ -1,6 +1,6 @@
 {
-    "name": "aydin-hassan/cli-md-renderer",
-    "description": "A CLI Markdown Render for league/commonmark compatibile AST",
+    "name": "php-school/cli-md-renderer",
+    "description": "A CLI Markdown Render for league/commonmark compatible AST",
     "license": "MIT",
     "authors": [
         {
