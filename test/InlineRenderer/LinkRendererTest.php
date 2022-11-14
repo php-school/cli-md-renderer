@@ -7,6 +7,7 @@ use AydinHassan\CliMdRenderer\InlineRenderer\LinkRenderer;
 use AydinHassan\CliMdRenderer\InlineRenderer\TextRenderer;
 use AydinHassan\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
+use League\CommonMark\Environment;
 use League\CommonMark\Inline\Element\Link;
 use League\CommonMark\Inline\Element\Text;
 
@@ -19,16 +20,15 @@ class LinkRendererTest extends AbstractInlineRendererTest implements RendererTes
 
     public function testRender(): void
     {
-        $class          = $this->getRendererClass();
-        $renderer       = new $class();
-        $link           = new Link('http://www.google.com');
+        $class = $this->getRendererClass();
+        $renderer = new $class();
+        $link = new Link('http://www.google.com');
         $link->appendChild(new Text('http://www.google.com'));
 
-        $color          = new Color();
+        $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer    = new CliRenderer([], [
-            Text::class => new TextRenderer()
-        ], $color);
+        $environment = (new Environment())->addInlineRenderer(Text::class, new TextRenderer());
+        $cliRenderer = new CliRenderer($environment, $color);
 
         $this->assertSame(
             "[94m[1m[4mhttp://www.google.com[0m[0m[0m",

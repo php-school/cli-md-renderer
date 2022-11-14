@@ -8,6 +8,7 @@ use AydinHassan\CliMdRenderer\Renderer\ParagraphRenderer;
 use AydinHassan\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\Paragraph;
+use League\CommonMark\Environment;
 use League\CommonMark\Inline\Element\Text;
 
 class ParagraphRendererTest extends AbstractRendererTest implements RendererTestInterface
@@ -19,17 +20,16 @@ class ParagraphRendererTest extends AbstractRendererTest implements RendererTest
 
     public function testRender(): void
     {
-        $class          = $this->getRendererClass();
-        $renderer       = new $class();
-        $paragraph      = new Paragraph();
+        $class = $this->getRendererClass();
+        $renderer = new $class();
+        $paragraph = new Paragraph();
         $paragraph->appendChild(new Text('Some Text 1'));
         $paragraph->appendChild(new Text('Some Text 2'));
 
-        $color          = new Color();
+        $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer    = new CliRenderer([], [
-            Text::class => new TextRenderer()
-        ], $color);
+        $environment = (new Environment())->addInlineRenderer(Text::class, new TextRenderer());
+        $cliRenderer = new CliRenderer($environment, $color);
 
         $this->assertEquals(
             "Some Text 1Some Text 2\n",

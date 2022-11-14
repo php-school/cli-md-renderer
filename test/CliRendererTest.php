@@ -7,6 +7,7 @@ use AydinHassan\CliMdRenderer\InlineRenderer\CliInlineRendererInterface;
 use AydinHassan\CliMdRenderer\Renderer\CliBlockRendererInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\AbstractBlock;
+use League\CommonMark\Environment;
 use League\CommonMark\Inline\Element\AbstractInline;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -22,7 +23,7 @@ class CliRendererTest extends TestCase
             sprintf('Unable to find corresponding renderer for block type: "%s"', get_class($block))
         );
 
-        $renderer = new CliRenderer([], [], new Color());
+        $renderer = new CliRenderer(new Environment(), new Color());
         $renderer->renderBlock($block);
     }
 
@@ -31,9 +32,9 @@ class CliRendererTest extends TestCase
         $block = $this->createMock(AbstractBlock::class);
         $class = get_class($block);
         $blockRenderer = $this->createMock(CliBlockRendererInterface::class);
-        $renderer = new CliRenderer([
-            $class => $blockRenderer
-        ], [], new Color());
+        $environment = new Environment();
+        $environment->addBlockRenderer($class, $blockRenderer);
+        $renderer = new CliRenderer($environment, new Color());
 
         $blockRenderer
             ->expects($this->once())
@@ -49,10 +50,12 @@ class CliRendererTest extends TestCase
         $block2         = $this->createMock(AbstractBlock::class);
         $blockRenderer  = $this->createMock(CliBlockRendererInterface::class);
 
-        $renderer = new CliRenderer([
-            get_class($block1) => $blockRenderer,
-            get_class($block2) => $blockRenderer,
-        ], [], new Color());
+        $environment = new Environment();
+        $environment
+            ->addBlockRenderer(get_class($block1), $blockRenderer)
+            ->addBlockRenderer(get_class($block2), $blockRenderer);
+
+        $renderer = new CliRenderer($environment, new Color());
 
         $blockRenderer
             ->expects($this->exactly(2))
@@ -75,7 +78,7 @@ class CliRendererTest extends TestCase
             sprintf('Unable to find corresponding renderer for inline type: "%s"', get_class($block))
         );
 
-        $renderer = new CliRenderer([], [], new Color());
+        $renderer = new CliRenderer(new Environment(), new Color());
         $renderer->renderInlines([$block]);
     }
 
@@ -85,10 +88,12 @@ class CliRendererTest extends TestCase
         $block2 = $this->createMock(AbstractInline::class);
         $inlineRenderer  = $this->createMock(CliInlineRendererInterface::class);
 
-        $renderer = new CliRenderer([], [
-            get_class($block1) => $inlineRenderer,
-            get_class($block2) => $inlineRenderer,
-        ], new Color());
+        $environment = new Environment();
+        $environment
+            ->addInlineRenderer(get_class($block1), $inlineRenderer)
+            ->addInlineRenderer(get_class($block2), $inlineRenderer);
+
+        $renderer = new CliRenderer($environment, new Color());
 
         $inlineRenderer
             ->expects($this->exactly(2))

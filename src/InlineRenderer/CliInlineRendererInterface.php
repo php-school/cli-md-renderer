@@ -2,10 +2,11 @@
 
 namespace AydinHassan\CliMdRenderer\InlineRenderer;
 
+use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\Inline\Element\AbstractInline;
-use AydinHassan\CliMdRenderer\CliRenderer;
+use League\CommonMark\Inline\Renderer\InlineRendererInterface;
 
-interface CliInlineRendererInterface
+interface CliInlineRendererInterface extends InlineRendererInterface
 {
-    public function render(AbstractInline $inline, CliRenderer $renderer): string;
+    public function render(AbstractInline $inline, ElementRendererInterface $htmlRenderer): string;
 }
