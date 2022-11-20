@@ -1,9 +1,9 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\Renderer;
+namespace PhpSchool\CliMdRenderer\Renderer;
 
 use League\CommonMark\Block\Element\AbstractBlock;
-use AydinHassan\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\CliRenderer;
 use League\CommonMark\Block\Element\ListItem;
 use League\CommonMark\Block\Renderer\BlockRendererInterface;
 use League\CommonMark\ElementRendererInterface;

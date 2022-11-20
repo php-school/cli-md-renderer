@@ -1,10 +1,10 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest\InlineRenderer;
+namespace PhpSchool\CliMdRendererTest\InlineRenderer;
 
-use AydinHassan\CliMdRenderer\CliRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\TextRenderer;
-use AydinHassan\CliMdRendererTest\RendererTestInterface;
+use PhpSchool\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\InlineRenderer\TextRenderer;
+use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
 use League\CommonMark\Environment;
 use League\CommonMark\Inline\Element\Text;

@@ -1,8 +1,8 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\InlineRenderer;
+namespace PhpSchool\CliMdRenderer\InlineRenderer;
 
-use AydinHassan\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\CliRenderer;
 use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\Inline\Element\AbstractInline;
 use League\CommonMark\Inline\Element\Code;

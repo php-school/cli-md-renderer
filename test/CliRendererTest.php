@@ -1,10 +1,10 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest;
+namespace PhpSchool\CliMdRendererTest;
 
-use AydinHassan\CliMdRenderer\CliRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\CliInlineRendererInterface;
-use AydinHassan\CliMdRenderer\Renderer\CliBlockRendererInterface;
+use PhpSchool\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\InlineRenderer\CliInlineRendererInterface;
+use PhpSchool\CliMdRenderer\Renderer\CliBlockRendererInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Environment;

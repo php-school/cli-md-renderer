@@ -1,6 +1,6 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer;
+namespace PhpSchool\CliMdRenderer;
 
 use Colors\Color;
 use League\CommonMark\Environment;

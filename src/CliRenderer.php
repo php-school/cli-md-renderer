@@ -1,9 +1,9 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer;
+namespace PhpSchool\CliMdRenderer;
 
-use AydinHassan\CliMdRenderer\InlineRenderer\CliInlineRendererInterface;
-use AydinHassan\CliMdRenderer\Renderer\CliBlockRendererInterface;
+use PhpSchool\CliMdRenderer\InlineRenderer\CliInlineRendererInterface;
+use PhpSchool\CliMdRenderer\Renderer\CliBlockRendererInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Renderer\BlockRendererInterface;

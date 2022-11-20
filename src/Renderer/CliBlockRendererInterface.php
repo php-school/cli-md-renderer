@@ -1,6 +1,6 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\Renderer;
+namespace PhpSchool\CliMdRenderer\Renderer;
 
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Renderer\BlockRendererInterface;

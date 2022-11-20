@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace AydinHassan\CliMdRenderer;
+namespace PhpSchool\CliMdRenderer;
 
-use AydinHassan\CliMdRenderer\Highlighter\PhpHighlighter;
-use AydinHassan\CliMdRenderer\InlineRenderer\CodeRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\EmphasisRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\LinkRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\NewlineRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\StrongRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\TextRenderer;
-use AydinHassan\CliMdRenderer\Renderer\DocumentRenderer;
-use AydinHassan\CliMdRenderer\Renderer\FencedCodeRenderer;
-use AydinHassan\CliMdRenderer\Renderer\HeaderRenderer;
-use AydinHassan\CliMdRenderer\Renderer\HorizontalRuleRenderer;
-use AydinHassan\CliMdRenderer\Renderer\ListBlockRenderer;
-use AydinHassan\CliMdRenderer\Renderer\ListItemRenderer;
-use AydinHassan\CliMdRenderer\Renderer\ParagraphRenderer;
+use PhpSchool\CliMdRenderer\Highlighter\PhpHighlighter;
+use PhpSchool\CliMdRenderer\InlineRenderer\CodeRenderer;
+use PhpSchool\CliMdRenderer\InlineRenderer\EmphasisRenderer;
+use PhpSchool\CliMdRenderer\InlineRenderer\LinkRenderer;
+use PhpSchool\CliMdRenderer\InlineRenderer\NewlineRenderer;
+use PhpSchool\CliMdRenderer\InlineRenderer\StrongRenderer;
+use PhpSchool\CliMdRenderer\InlineRenderer\TextRenderer;
+use PhpSchool\CliMdRenderer\Renderer\DocumentRenderer;
+use PhpSchool\CliMdRenderer\Renderer\FencedCodeRenderer;
+use PhpSchool\CliMdRenderer\Renderer\HeaderRenderer;
+use PhpSchool\CliMdRenderer\Renderer\HorizontalRuleRenderer;
+use PhpSchool\CliMdRenderer\Renderer\ListBlockRenderer;
+use PhpSchool\CliMdRenderer\Renderer\ListItemRenderer;
+use PhpSchool\CliMdRenderer\Renderer\ParagraphRenderer;
 use Kadet\Highlighter\KeyLighter;
 use League\CommonMark\Block\Element\Document;
 use League\CommonMark\Block\Element\FencedCode;

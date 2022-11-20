@@ -1,6 +1,6 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\InlineRenderer;
+namespace PhpSchool\CliMdRenderer\InlineRenderer;
 
 use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\Inline\Element\AbstractInline;

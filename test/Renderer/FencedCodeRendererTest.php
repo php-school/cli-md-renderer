@@ -1,17 +1,17 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest\Renderer;
+namespace PhpSchool\CliMdRendererTest\Renderer;
 
-use AydinHassan\CliMdRenderer\CliRenderer;
-use AydinHassan\CliMdRenderer\Highlighter\PhpHighlighter;
-use AydinHassan\CliMdRenderer\SyntaxHighlighterInterface;
-use AydinHassan\CliMdRendererTest\RendererTestInterface;
+use PhpSchool\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\Highlighter\PhpHighlighter;
+use PhpSchool\CliMdRenderer\SyntaxHighlighterInterface;
+use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
 use InvalidArgumentException;
 use Kadet\Highlighter\KeyLighter;
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\FencedCode;
-use AydinHassan\CliMdRenderer\Renderer\FencedCodeRenderer;
+use PhpSchool\CliMdRenderer\Renderer\FencedCodeRenderer;
 use League\CommonMark\Environment;
 
 class FencedCodeRendererTest extends AbstractRendererTest implements RendererTestInterface

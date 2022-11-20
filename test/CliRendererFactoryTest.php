@@ -1,9 +1,9 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest;
+namespace PhpSchool\CliMdRendererTest;
 
-use AydinHassan\CliMdRenderer\CliRenderer;
-use AydinHassan\CliMdRenderer\CliRendererFactory;
+use PhpSchool\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\CliRendererFactory;
 use PHPUnit\Framework\TestCase;
 
 class CliRendererFactoryTest extends TestCase

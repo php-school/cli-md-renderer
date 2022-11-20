@@ -14,7 +14,7 @@ require_once 'vendor/autoload.php';
 
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
-use AydinHassan\CliMdRenderer\CliRendererFactory;
+use PhpSchool\CliMdRenderer\CliRendererFactory;
 
 $parser = new DocParser(Environment::createCommonMarkEnvironment());
 $cliRenderer = (new CliRendererFactory)->__invoke();
@@ -33,7 +33,7 @@ It accepts code as a string and should return highlighted code as a string. You 
 ```php
 <?php
 
-use AydinHassan\CliMdRenderer\Renderer\FencedCodeRenderer;
+use PhpSchool\CliMdRenderer\Renderer\FencedCodeRenderer;
 
 $codeRenderer = new FencedCodeRenderer;
 $codeRenderer->addSyntaxHighlighter('js', new JsSyntaxHighlighter);

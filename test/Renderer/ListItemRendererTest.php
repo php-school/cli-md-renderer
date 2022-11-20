@@ -1,12 +1,12 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest\Renderer;
+namespace PhpSchool\CliMdRendererTest\Renderer;
 
-use AydinHassan\CliMdRenderer\CliRenderer;
-use AydinHassan\CliMdRenderer\InlineRenderer\TextRenderer;
-use AydinHassan\CliMdRenderer\Renderer\ListItemRenderer;
-use AydinHassan\CliMdRenderer\Renderer\ParagraphRenderer;
-use AydinHassan\CliMdRendererTest\RendererTestInterface;
+use PhpSchool\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\InlineRenderer\TextRenderer;
+use PhpSchool\CliMdRenderer\Renderer\ListItemRenderer;
+use PhpSchool\CliMdRenderer\Renderer\ParagraphRenderer;
+use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\ListData;
 use League\CommonMark\Block\Element\ListItem;

@@ -1,11 +1,11 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest\Renderer;
+namespace PhpSchool\CliMdRendererTest\Renderer;
 
-use AydinHassan\CliMdRenderer\CliRenderer;
-use AydinHassan\CliMdRenderer\Renderer\DocumentRenderer;
-use AydinHassan\CliMdRenderer\Renderer\ParagraphRenderer;
-use AydinHassan\CliMdRendererTest\RendererTestInterface;
+use PhpSchool\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\Renderer\DocumentRenderer;
+use PhpSchool\CliMdRenderer\Renderer\ParagraphRenderer;
+use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\Document;
 use League\CommonMark\Block\Element\Paragraph;

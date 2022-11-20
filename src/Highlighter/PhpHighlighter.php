@@ -1,8 +1,8 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\Highlighter;
+namespace PhpSchool\CliMdRenderer\Highlighter;
 
-use AydinHassan\CliMdRenderer\SyntaxHighlighterInterface;
+use PhpSchool\CliMdRenderer\SyntaxHighlighterInterface;
 use Kadet\Highlighter\Formatter\CliFormatter;
 use Kadet\Highlighter\KeyLighter;
 use Kadet\Highlighter\Language\Php;

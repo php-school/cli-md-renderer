@@ -1,10 +1,10 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\Renderer;
+namespace PhpSchool\CliMdRenderer\Renderer;
 
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\Paragraph;
-use AydinHassan\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\CliRenderer;
 use League\CommonMark\Block\Renderer\BlockRendererInterface;
 use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\Inline\Renderer\InlineRendererInterface;

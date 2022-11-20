@@ -1,11 +1,11 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest\Renderer;
+namespace PhpSchool\CliMdRendererTest\Renderer;
 
-use AydinHassan\CliMdRendererTest\RendererTestInterface;
+use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use League\CommonMark\Block\Element\AbstractBlock;
 use PHPUnit\Framework\TestCase;
-use AydinHassan\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\CliRenderer;
 use InvalidArgumentException;
 
 abstract class AbstractRendererTest extends TestCase

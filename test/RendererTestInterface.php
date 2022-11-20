@@ -1,6 +1,6 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest;
+namespace PhpSchool\CliMdRendererTest;
 
 interface RendererTestInterface
 {
