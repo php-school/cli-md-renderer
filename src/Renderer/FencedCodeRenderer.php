@@ -1,11 +1,11 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\Renderer;
+namespace PhpSchool\CliMdRenderer\Renderer;
 
-use AydinHassan\CliMdRenderer\SyntaxHighlighterInterface;
+use PhpSchool\CliMdRenderer\SyntaxHighlighterInterface;
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\FencedCode;
-use AydinHassan\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\CliRenderer;
 use League\CommonMark\Block\Renderer\BlockRendererInterface;
 use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\Inline\Renderer\InlineRendererInterface;

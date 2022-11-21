@@ -1,10 +1,10 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest\Renderer;
+namespace PhpSchool\CliMdRendererTest\Renderer;
 
-use AydinHassan\CliMdRenderer\CliRenderer;
-use AydinHassan\CliMdRenderer\Renderer\HorizontalRuleRenderer;
-use AydinHassan\CliMdRendererTest\RendererTestInterface;
+use PhpSchool\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\Renderer\HorizontalRuleRenderer;
+use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
 use League\CommonMark\Block\Element\ThematicBreak;
 use League\CommonMark\Environment;

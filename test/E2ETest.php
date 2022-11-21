@@ -1,8 +1,8 @@
 <?php
 
-namespace AydinHassan\CliMdRendererTest;
+namespace PhpSchool\CliMdRendererTest;
 
-use AydinHassan\CliMdRenderer\CliRendererFactory;
+use PhpSchool\CliMdRenderer\CliRendererFactory;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use PHPUnit\Framework\TestCase;

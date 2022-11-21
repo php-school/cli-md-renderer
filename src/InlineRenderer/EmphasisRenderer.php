@@ -1,11 +1,11 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\InlineRenderer;
+namespace PhpSchool\CliMdRenderer\InlineRenderer;
 
 use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\Inline\Element\AbstractInline;
 use League\CommonMark\Inline\Element\Emphasis;
-use AydinHassan\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\CliRenderer;
 
 class EmphasisRenderer implements CliInlineRendererInterface
 {

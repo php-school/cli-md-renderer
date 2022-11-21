@@ -1,11 +1,11 @@
 <?php
 
-namespace AydinHassan\CliMdRenderer\Renderer;
+namespace PhpSchool\CliMdRenderer\Renderer;
 
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\Document;
 use League\CommonMark\ElementRendererInterface;
-use AydinHassan\CliMdRenderer\CliRenderer;
+use PhpSchool\CliMdRenderer\CliRenderer;
 
 class DocumentRenderer implements CliBlockRendererInterface
 {

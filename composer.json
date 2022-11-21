@@ -21,11 +21,11 @@
     },
     "autoload" : {
         "psr-4" : {
-            "AydinHassan\\CliMdRenderer\\": "src"
+            "PhpSchool\\CliMdRenderer\\": "src"
         }
     },
     "autoload-dev": {
-        "psr-4": { "AydinHassan\\CliMdRendererTest\\": "test/" }
+        "psr-4": { "PhpSchool\\CliMdRendererTest\\": "test/" }
     },
     "scripts" : {
         "cs" : [
