@@ -3,7 +3,7 @@
 namespace PhpSchool\CliMdRendererTest\Renderer;
 
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
-use League\CommonMark\Block\Element\AbstractBlock;
+use League\CommonMark\Node\Block\AbstractBlock;
 use PHPUnit\Framework\TestCase;
 use PhpSchool\CliMdRenderer\CliRenderer;
 use InvalidArgumentException;
@@ -16,12 +16,10 @@ abstract class AbstractRendererTest extends TestCase
             $this->markTestSkipped('Not a Renderer');
         }
 
-        $block = $this->createMock(AbstractBlock::class);
+        $block = $this->createStub(AbstractBlock::class);
         $class = $this->getRendererClass();
 
-        $cliRenderer = $this->getMockBuilder(CliRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cliRenderer = $this->createStub(CliRenderer::class);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Incompatible block type: "%s"', get_class($block)));

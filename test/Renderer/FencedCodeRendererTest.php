@@ -9,10 +9,10 @@ use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
 use InvalidArgumentException;
 use Kadet\Highlighter\KeyLighter;
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Block\Element\FencedCode;
+use League\CommonMark\Node\Block\AbstractBlock;
+use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
 use PhpSchool\CliMdRenderer\Renderer\FencedCodeRenderer;
-use League\CommonMark\Environment;
+use League\CommonMark\Environment\Environment;
 
 class FencedCodeRendererTest extends AbstractRendererTest implements RendererTestInterface
 {
@@ -24,7 +24,7 @@ class FencedCodeRendererTest extends AbstractRendererTest implements RendererTes
     public function testAddSyntaxHighlighterViaConstructor(): void
     {
         $renderer = new FencedCodeRenderer(
-            ['php' => $highlighter = $this->createMock(SyntaxHighlighterInterface::class)]
+            ['php' => $highlighter = $this->createStub(SyntaxHighlighterInterface::class)]
         );
 
         $this->assertSame($renderer->getSyntaxHighlighters(), ['php' => $highlighter]);
@@ -33,7 +33,7 @@ class FencedCodeRendererTest extends AbstractRendererTest implements RendererTes
     public function testAddSyntaxHighlighter(): void
     {
         $renderer = new FencedCodeRenderer();
-        $renderer->addSyntaxHighlighter('php', $highlighter = $this->createMock(SyntaxHighlighterInterface::class));
+        $renderer->addSyntaxHighlighter('php', $highlighter = $this->createStub(SyntaxHighlighterInterface::class));
 
         $this->assertSame($renderer->getSyntaxHighlighters(), ['php' => $highlighter]);
     }
@@ -41,18 +41,9 @@ class FencedCodeRendererTest extends AbstractRendererTest implements RendererTes
     public function testRenderPhpCode(): void
     {
         $renderer = $this->getRenderer();
-        $code = $this->getMockBuilder(FencedCode::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $code
-            ->expects($this->once())
-            ->method('getStringContent')
-            ->willReturn('<?php echo \'Hello World\';');
-
-        $code
-            ->expects($this->once())
-            ->method('getInfoWords')
-            ->willReturn(['php']);
+        $code = new FencedCode(3, '`', 0);
+        $code->setInfo('php');
+        $code->setLiteral('<?php echo \'Hello World\';');
 
         $color = new Color();
         $color->setForceStyle(true);
@@ -68,18 +59,9 @@ class FencedCodeRendererTest extends AbstractRendererTest implements RendererTes
     {
         $renderer = $this->getRenderer();
 
-        $code = $this->getMockBuilder(FencedCode::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $code
-            ->expects($this->once())
-            ->method('getStringContent')
-            ->willReturn('console.log("lol js???")');
-
-        $code
-            ->expects($this->once())
-            ->method('getInfoWords')
-            ->willReturn(['js']);
+        $code = new FencedCode(3, '`', 0);
+        $code->setInfo('js');
+        $code->setLiteral('console.log("lol js???")');
 
         $color = new Color();
         $color->setForceStyle(true);
@@ -93,11 +75,9 @@ class FencedCodeRendererTest extends AbstractRendererTest implements RendererTes
 
     public function testExceptionIsThrownIfNotCorrectBlock(): void
     {
-        $block = $this->createMock(AbstractBlock::class);
+        $block = $this->createStub(AbstractBlock::class);
 
-        $cliRenderer = $this->getMockBuilder(CliRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cliRenderer = $this->createStub(CliRenderer::class);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Incompatible block type: "%s"', get_class($block)));

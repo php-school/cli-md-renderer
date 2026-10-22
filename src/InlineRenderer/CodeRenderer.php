@@ -3,22 +3,22 @@
 namespace PhpSchool\CliMdRenderer\InlineRenderer;
 
 use PhpSchool\CliMdRenderer\CliRenderer;
-use League\CommonMark\ElementRendererInterface;
-use League\CommonMark\Inline\Element\AbstractInline;
-use League\CommonMark\Inline\Element\Code;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
 class CodeRenderer implements CliInlineRendererInterface
 {
-    public function render(AbstractInline $inline, ElementRendererInterface $renderer): string
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string
     {
-        if (!($renderer instanceof CliRenderer)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($renderer)));
+        if (!($childRenderer instanceof CliRenderer)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($childRenderer)));
         }
 
-        if (!($inline instanceof Code)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible inline type: "%s"', get_class($inline)));
+        if (!($node instanceof Code)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible inline type: "%s"', get_class($node)));
         }
 
-        return $renderer->style($inline->getContent(), 'yellow');
+        return $childRenderer->style($node->getLiteral(), 'yellow');
     }
 }

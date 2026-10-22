@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage includeUncoveredFiles="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd" displayDetailsOnTestsThatTriggerDeprecations="true" displayDetailsOnTestsThatTriggerWarnings="true" displayDetailsOnTestsThatTriggerNotices="true">
+  <source>
     <include>
       <directory suffix=".php">./src</directory>
     </include>
-  </coverage>
-  <testsuite name="CLI MD Renderer Test Suite">
-    <directory>./test</directory>
-  </testsuite>
+  </source>
+  <testsuites>
+    <testsuite name="CLI MD Renderer Test Suite">
+      <directory>./test</directory>
+      <exclude>./test/Renderer/AbstractRendererTest.php</exclude>
+      <exclude>./test/InlineRenderer/AbstractInlineRendererTest.php</exclude>
+    </testsuite>
+  </testsuites>
 </phpunit>

@@ -2,15 +2,11 @@
 
 namespace PhpSchool\CliMdRenderer\Renderer;
 
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Block\Renderer\BlockRendererInterface;
-use League\CommonMark\ElementRendererInterface;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
+use League\CommonMark\Renderer\NodeRendererInterface;
 
-interface CliBlockRendererInterface extends BlockRendererInterface
+interface CliBlockRendererInterface extends NodeRendererInterface
 {
-    public function render(
-        AbstractBlock $block,
-        ElementRendererInterface $htmlRenderer,
-        bool $inTightList = false
-    ): string;
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string;
 }

@@ -6,8 +6,8 @@ use PhpSchool\CliMdRenderer\CliRenderer;
 use PhpSchool\CliMdRenderer\InlineRenderer\TextRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Text;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Node\Inline\Text;
 
 class TextRendererTest extends AbstractInlineRendererTest implements RendererTestInterface
 {

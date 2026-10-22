@@ -2,12 +2,13 @@
 
 namespace PhpSchool\CliMdRendererTest\Renderer;
 
+use PhpSchool\CliMdRenderer\CliExtension;
 use PhpSchool\CliMdRenderer\CliRenderer;
 use PhpSchool\CliMdRenderer\Renderer\HorizontalRuleRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Block\Element\ThematicBreak;
-use League\CommonMark\Environment;
+use League\CommonMark\Extension\CommonMark\Node\Block\ThematicBreak;
+use League\CommonMark\Environment\Environment;
 
 class HorizontalRuleRendererTest extends AbstractRendererTest implements RendererTestInterface
 {
@@ -40,7 +41,9 @@ class HorizontalRuleRendererTest extends AbstractRendererTest implements Rendere
 
         $color = new Color();
         $color->setForceStyle(true);
-        $cliRenderer = new CliRenderer(new Environment(['renderer' => ['width' => 10]]), $color);
+        $environment = new Environment(['renderer' => ['width' => 10]]);
+        $environment->addExtension(new CliExtension());
+        $cliRenderer = new CliRenderer($environment, $color);
 
         $this->assertEquals(
             "[90m----------[0m",

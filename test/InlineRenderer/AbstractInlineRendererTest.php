@@ -3,7 +3,7 @@
 namespace PhpSchool\CliMdRendererTest\InlineRenderer;
 
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
-use League\CommonMark\Inline\Element\AbstractInline;
+use League\CommonMark\Node\Inline\AbstractInline;
 use PHPUnit\Framework\TestCase;
 use PhpSchool\CliMdRenderer\CliRenderer;
 use InvalidArgumentException;
@@ -16,12 +16,10 @@ abstract class AbstractInlineRendererTest extends TestCase
             $this->markTestSkipped('Not a Renderer');
         }
 
-        $block = $this->createMock(AbstractInline::class);
+        $block = $this->createStub(AbstractInline::class);
         $class = $this->getRendererClass();
 
-        $cliRenderer = $this->getMockBuilder(CliRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cliRenderer = $this->createStub(CliRenderer::class);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Incompatible inline type: "%s"', get_class($block)));

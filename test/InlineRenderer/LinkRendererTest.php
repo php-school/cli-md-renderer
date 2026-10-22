@@ -7,9 +7,9 @@ use PhpSchool\CliMdRenderer\InlineRenderer\LinkRenderer;
 use PhpSchool\CliMdRenderer\InlineRenderer\TextRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Link;
-use League\CommonMark\Inline\Element\Text;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Node\Inline\Text;
 
 class LinkRendererTest extends AbstractInlineRendererTest implements RendererTestInterface
 {
@@ -27,7 +27,7 @@ class LinkRendererTest extends AbstractInlineRendererTest implements RendererTes
 
         $color = new Color();
         $color->setForceStyle(true);
-        $environment = (new Environment())->addInlineRenderer(Text::class, new TextRenderer());
+        $environment = (new Environment())->addRenderer(Text::class, new TextRenderer());
         $cliRenderer = new CliRenderer($environment, $color);
 
         $this->assertSame(

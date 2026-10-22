@@ -3,12 +3,12 @@
 namespace PhpSchool\CliMdRenderer;
 
 use Colors\Color;
-use League\CommonMark\Environment;
+use League\CommonMark\Environment\Environment;
 
 class CliRendererFactory
 {
     /**
-     * @param array<mixed> $environmentConfig
+     * @param array<string, mixed> $environmentConfig
      * @return CliRenderer
      */
     public function __invoke(array $environmentConfig = []): CliRenderer

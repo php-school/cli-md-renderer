@@ -6,40 +6,39 @@ on:
   pull_request:
     branches: [ master ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        php: [7.1, 7.2, 7.3, 7.4, 8.0, 8.1, 8.2]
+        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
 
     name: PHP ${{ matrix.php }}
+    timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: composer:v1
+          tools: composer:v2
+          coverage: none
 
       - name: Install Dependencies
         run: composer update
 
       - name: Run phpunit tests
-        run: |
-          mkdir -p build/logs
-          vendor/bin/phpunit --coverage-clover ./build/logs/clover.xml
+        run: vendor/bin/phpunit --stop-on-error
 
       - name: Run phpcs
         run: composer cs
 
       - name: Run phpstan
         run: composer static
-
-      - name: Coverage upload
-        if: matrix.php == '7.4'
-        run: bash <(curl -s https://codecov.io/bash)
-

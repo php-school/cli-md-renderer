@@ -6,9 +6,9 @@ use PhpSchool\CliMdRenderer\CliRenderer;
 use PhpSchool\CliMdRenderer\InlineRenderer\CliInlineRendererInterface;
 use PhpSchool\CliMdRenderer\Renderer\CliBlockRendererInterface;
 use Colors\Color;
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\AbstractInline;
+use League\CommonMark\Node\Block\AbstractBlock;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Node\Inline\AbstractInline;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -16,7 +16,7 @@ class CliRendererTest extends TestCase
 {
     public function testRenderBlockThrowsExceptionIfNoRenderer(): void
     {
-        $block = $this->createMock(AbstractBlock::class);
+        $block = $this->createStub(AbstractBlock::class);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
@@ -29,49 +29,49 @@ class CliRendererTest extends TestCase
 
     public function testRenderBlock(): void
     {
-        $block = $this->createMock(AbstractBlock::class);
+        $block = $this->createStub(AbstractBlock::class);
         $class = get_class($block);
         $blockRenderer = $this->createMock(CliBlockRendererInterface::class);
         $environment = new Environment();
-        $environment->addBlockRenderer($class, $blockRenderer);
+        $environment->addRenderer($class, $blockRenderer);
         $renderer = new CliRenderer($environment, new Color());
 
         $blockRenderer
             ->expects($this->once())
             ->method('render')
-            ->with($block, $renderer);
+            ->with($block, $renderer)
+            ->willReturn('block');
 
         $renderer->renderBlock($block);
     }
 
     public function testRenderBlocks(): void
     {
-        $block1         = $this->createMock(AbstractBlock::class);
-        $block2         = $this->createMock(AbstractBlock::class);
+        $block1         = $this->createStub(AbstractBlock::class);
+        $block2         = $this->createStub(AbstractBlock::class);
         $blockRenderer  = $this->createMock(CliBlockRendererInterface::class);
 
         $environment = new Environment();
         $environment
-            ->addBlockRenderer(get_class($block1), $blockRenderer)
-            ->addBlockRenderer(get_class($block2), $blockRenderer);
+            ->addRenderer(get_class($block1), $blockRenderer)
+            ->addRenderer(get_class($block2), $blockRenderer);
 
         $renderer = new CliRenderer($environment, new Color());
 
         $blockRenderer
             ->expects($this->exactly(2))
             ->method('render')
-            ->withConsecutive([$block1, $renderer], [$block2, $renderer])
-            ->willReturnOnConsecutiveCalls(
-                'block1',
-                'block2'
-            );
+            ->willReturnMap([
+                [$block1, $renderer, 'block1'],
+                [$block2, $renderer, 'block2'],
+            ]);
 
-        $renderer->renderBlocks([$block1, $block2]);
+        $this->assertSame("block1\nblock2", $renderer->renderBlocks([$block1, $block2]));
     }
 
     public function testRenderInlineBlocksThrowsExceptionIfNoRenderer(): void
     {
-        $block = $this->createMock(AbstractInline::class);
+        $block = $this->createStub(AbstractInline::class);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
@@ -84,25 +84,24 @@ class CliRendererTest extends TestCase
 
     public function testRenderInlineBlocks(): void
     {
-        $block1 = $this->createMock(AbstractInline::class);
-        $block2 = $this->createMock(AbstractInline::class);
+        $block1 = $this->createStub(AbstractInline::class);
+        $block2 = $this->createStub(AbstractInline::class);
         $inlineRenderer  = $this->createMock(CliInlineRendererInterface::class);
 
         $environment = new Environment();
         $environment
-            ->addInlineRenderer(get_class($block1), $inlineRenderer)
-            ->addInlineRenderer(get_class($block2), $inlineRenderer);
+            ->addRenderer(get_class($block1), $inlineRenderer)
+            ->addRenderer(get_class($block2), $inlineRenderer);
 
         $renderer = new CliRenderer($environment, new Color());
 
         $inlineRenderer
             ->expects($this->exactly(2))
             ->method('render')
-            ->withConsecutive([$block1, $renderer], [$block2, $renderer])
-            ->willReturnOnConsecutiveCalls(
-                'inline1',
-                'inline2'
-            );
+            ->willReturnMap([
+                [$block1, $renderer, 'inline1'],
+                [$block2, $renderer, 'inline2'],
+            ]);
 
         $this->assertEquals('inline1inline2', $renderer->renderInlines([$block1, $block2]));
     }

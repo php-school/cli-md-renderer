@@ -2,11 +2,11 @@
 
 namespace PhpSchool\CliMdRenderer\InlineRenderer;
 
-use League\CommonMark\ElementRendererInterface;
-use League\CommonMark\Inline\Element\AbstractInline;
-use League\CommonMark\Inline\Renderer\InlineRendererInterface;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
+use League\CommonMark\Renderer\NodeRendererInterface;
 
-interface CliInlineRendererInterface extends InlineRendererInterface
+interface CliInlineRendererInterface extends NodeRendererInterface
 {
-    public function render(AbstractInline $inline, ElementRendererInterface $htmlRenderer): string;
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string;
 }

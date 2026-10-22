@@ -12,11 +12,15 @@ CLI Markdown Renderer
 <?php
 require_once 'vendor/autoload.php';
 
-use League\CommonMark\DocParser;
-use League\CommonMark\Environment;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Parser\MarkdownParser;
 use PhpSchool\CliMdRenderer\CliRendererFactory;
 
-$parser = new DocParser(Environment::createCommonMarkEnvironment());
+$environment = new Environment();
+$environment->addExtension(new CommonMarkCoreExtension());
+
+$parser = new MarkdownParser($environment);
 $cliRenderer = (new CliRendererFactory)->__invoke();
 $ast = $parser->parse(file_get_contents('path/to/file.md'));
 
@@ -26,7 +30,7 @@ echo $cliRenderer->renderBlock($ast);
 ### Syntax Highlighting
 
 `FencedCode` can be syntax highlighted. By default only PHP source code is Syntax Highlighted using: [kadet/keylighter](https://github.com/kadet1090/KeyLighter)
-If you want to add syntax highlighting for other languages you should create a class which implements `\AydinHassan\CliMdRenderer\SyntaxHighlighterInterface`
+If you want to add syntax highlighting for other languages you should create a class which implements `\PhpSchool\CliMdRenderer\SyntaxHighlighterInterface`
 
 It accepts code as a string and should return highlighted code as a string. You register your highlighter like so
 
@@ -46,7 +50,9 @@ If you need to do this you cannot use the factory so construction will look some
 require_once 'vendor/autoload.php';
 
 use Colors\Color;
-use League\CommonMark\Environment;
+use League\CommonMark\Environment\Environment;
+use PhpSchool\CliMdRenderer\CliExtension;
+use PhpSchool\CliMdRenderer\CliRenderer;
 
 $environment = new Environment();
 $environment->addExtension(new CliExtension());

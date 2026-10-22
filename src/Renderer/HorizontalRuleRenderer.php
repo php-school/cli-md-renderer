@@ -2,27 +2,26 @@
 
 namespace PhpSchool\CliMdRenderer\Renderer;
 
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Block\Element\ThematicBreak;
+use League\CommonMark\Extension\CommonMark\Node\Block\ThematicBreak;
 use PhpSchool\CliMdRenderer\CliRenderer;
-use League\CommonMark\Block\Renderer\BlockRendererInterface;
-use League\CommonMark\ElementRendererInterface;
-use League\CommonMark\Inline\Renderer\InlineRendererInterface;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
 
-class HorizontalRuleRenderer implements BlockRendererInterface
+class HorizontalRuleRenderer implements CliBlockRendererInterface
 {
-    public function render(AbstractBlock $block, ElementRendererInterface $renderer, bool $inTightList = false): string
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string
     {
-        if (!($renderer instanceof CliRenderer)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($renderer)));
+        if (!($childRenderer instanceof CliRenderer)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($childRenderer)));
         }
 
-        $width = $renderer->getOption('width', 30);
+        /** @var int $width validated as an int by the schema registered in CliExtension */
+        $width = $childRenderer->getOption('width', 30);
 
-        if (!($block instanceof ThematicBreak)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($block)));
+        if (!($node instanceof ThematicBreak)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($node)));
         }
 
-        return $renderer->style(str_repeat('-', $width), 'dark_gray');
+        return $childRenderer->style(str_repeat('-', $width), 'dark_gray');
     }
 }

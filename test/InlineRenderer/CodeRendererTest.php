@@ -6,8 +6,8 @@ use PhpSchool\CliMdRenderer\CliRenderer;
 use PhpSchool\CliMdRenderer\InlineRenderer\CodeRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Code;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
 class CodeRendererTest extends AbstractInlineRendererTest implements RendererTestInterface
 {

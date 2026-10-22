@@ -2,26 +2,24 @@
 
 namespace PhpSchool\CliMdRenderer\Renderer;
 
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Block\Element\Document;
-use League\CommonMark\ElementRendererInterface;
+use League\CommonMark\Node\Block\Document;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
 use PhpSchool\CliMdRenderer\CliRenderer;
 
 class DocumentRenderer implements CliBlockRendererInterface
 {
-    public function render(AbstractBlock $block, ElementRendererInterface $renderer, bool $inTightList = false): string
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string
     {
-        if (!($renderer instanceof CliRenderer)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($renderer)));
+        if (!($childRenderer instanceof CliRenderer)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($childRenderer)));
         }
 
-        if (!($block instanceof Document)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($block)));
+        if (!($node instanceof Document)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($node)));
         }
 
-        /** @var array<AbstractBlock> $nodes */
-        $nodes = $block->children();
-        $wholeDoc = $renderer->renderBlocks($nodes);
+        $wholeDoc = $childRenderer->renderBlocks($node->children());
         return $wholeDoc === '' ? '' : $wholeDoc . "\n";
     }
 }

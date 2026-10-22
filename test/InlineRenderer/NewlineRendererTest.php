@@ -6,8 +6,8 @@ use PhpSchool\CliMdRenderer\CliRenderer;
 use PhpSchool\CliMdRenderer\InlineRenderer\NewlineRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Newline;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Node\Inline\Newline;
 
 class NewlineRendererTest extends AbstractInlineRendererTest implements RendererTestInterface
 {
