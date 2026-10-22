@@ -51,7 +51,12 @@ use League\CommonMark\Extension\CommonMark\Parser\Inline\EscapableParser;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\HtmlInlineParser;
 use League\CommonMark\Parser\Inline\NewlineParser;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\OpenBracketParser;
+use League\CommonMark\Delimiter\DelimiterParser;
 use League\CommonMark\Node\Node;
+use League\CommonMark\Parser\MarkdownParser;
+use PhpSchool\CliMdRenderer\CliRenderer;
+use Colors\Color;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class CliExtensionTest extends TestCase
@@ -98,7 +103,38 @@ class CliExtensionTest extends TestCase
             CloseBracketParser::class,
             OpenBracketParser::class,
             BangParser::class,
+            DelimiterParser::class,
         ], $inlineParsers);
+    }
+
+    #[DataProvider('emphasisProvider')]
+    public function testEmphasisIsParsedAndRendered(string $markdown, string $nodeClass, string $expected): void
+    {
+        $environment = new Environment();
+        $environment->addExtension(new CliExtension());
+
+        $document = (new MarkdownParser($environment))->parse($markdown);
+        $inline = $document->firstChild()?->firstChild();
+        self::assertInstanceOf($nodeClass, $inline);
+
+        $colors = new Color();
+        $colors->setForceStyle(true);
+        $renderer = new CliRenderer($environment, $colors);
+
+        self::assertSame($expected, $renderer->renderBlock($document));
+    }
+
+    /**
+     * @return array<string, array{string, class-string<Node>, string}>
+     */
+    public static function emphasisProvider(): array
+    {
+        return [
+            'strong asterisk' => ['**bold**', Strong::class, "\e[1mbold\e[0m\n\n"],
+            'strong underscore' => ['__bold__', Strong::class, "\e[1mbold\e[0m\n\n"],
+            'emphasis asterisk' => ['*italic*', Emphasis::class, "\e[3mitalic\e[0m\n\n"],
+            'emphasis underscore' => ['_italic_', Emphasis::class, "\e[3mitalic\e[0m\n\n"],
+        ];
     }
 
     /**
