@@ -16,8 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # lowest and highest supported PHP only, to keep CI cheap
-        php: ['8.1', '8.5']
+        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
 
     name: PHP ${{ matrix.php }}
     timeout-minutes: 10
