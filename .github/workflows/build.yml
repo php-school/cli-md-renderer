@@ -6,13 +6,18 @@ on:
   pull_request:
     branches: [ master ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
+        # lowest and highest supported PHP only, to keep CI cheap
+        php: ['8.1', '8.5']
 
     name: PHP ${{ matrix.php }}
     timeout-minutes: 10
@@ -25,22 +30,16 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           tools: composer:v2
+          coverage: none
 
       - name: Install Dependencies
         run: composer update
 
       - name: Run phpunit tests
-        run: |
-          mkdir -p build/logs
-          vendor/bin/phpunit --stop-on-error --coverage-clover ./build/logs/clover.xml
+        run: vendor/bin/phpunit --stop-on-error
 
       - name: Run phpcs
         run: composer cs
 
       - name: Run phpstan
         run: composer static
-
-      - name: Coverage upload
-        if: matrix.php == '8.4'
-        run: bash <(curl -s https://codecov.io/bash)
-
