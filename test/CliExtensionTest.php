@@ -20,39 +20,38 @@ use PhpSchool\CliMdRenderer\Renderer\HorizontalRuleRenderer;
 use PhpSchool\CliMdRenderer\Renderer\ListBlockRenderer;
 use PhpSchool\CliMdRenderer\Renderer\ListItemRenderer;
 use PhpSchool\CliMdRenderer\Renderer\ParagraphRenderer;
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Block\Element\Document;
-use League\CommonMark\Block\Element\FencedCode;
-use League\CommonMark\Block\Element\Heading;
-use League\CommonMark\Block\Element\ListBlock;
-use League\CommonMark\Block\Element\ListItem;
-use League\CommonMark\Block\Element\Paragraph;
-use League\CommonMark\Block\Element\ThematicBreak;
-use League\CommonMark\Block\Parser\ATXHeadingParser;
-use League\CommonMark\Block\Parser\BlockQuoteParser;
-use League\CommonMark\Block\Parser\FencedCodeParser;
-use League\CommonMark\Block\Parser\HtmlBlockParser;
-use League\CommonMark\Block\Parser\IndentedCodeParser;
-use League\CommonMark\Block\Parser\LazyParagraphParser;
-use League\CommonMark\Block\Parser\ListParser;
-use League\CommonMark\Block\Parser\SetExtHeadingParser;
-use League\CommonMark\Block\Parser\ThematicBreakParser;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Code;
-use League\CommonMark\Inline\Element\Emphasis;
-use League\CommonMark\Inline\Element\Link;
-use League\CommonMark\Inline\Element\Newline;
-use League\CommonMark\Inline\Element\Strong;
-use League\CommonMark\Inline\Element\Text;
-use League\CommonMark\Inline\Parser\AutolinkParser;
-use League\CommonMark\Inline\Parser\BacktickParser;
-use League\CommonMark\Inline\Parser\BangParser;
-use League\CommonMark\Inline\Parser\CloseBracketParser;
-use League\CommonMark\Inline\Parser\EntityParser;
-use League\CommonMark\Inline\Parser\EscapableParser;
-use League\CommonMark\Inline\Parser\HtmlInlineParser;
-use League\CommonMark\Inline\Parser\NewlineParser;
-use League\CommonMark\Inline\Parser\OpenBracketParser;
+use League\CommonMark\Node\Block\Document;
+use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
+use League\CommonMark\Node\Block\Paragraph;
+use League\CommonMark\Extension\CommonMark\Node\Block\ThematicBreak;
+use League\CommonMark\Extension\CommonMark\Parser\Block\HeadingStartParser;
+use League\CommonMark\Extension\CommonMark\Parser\Block\BlockQuoteStartParser;
+use League\CommonMark\Extension\CommonMark\Parser\Block\FencedCodeStartParser;
+use League\CommonMark\Extension\CommonMark\Parser\Block\HtmlBlockStartParser;
+use League\CommonMark\Extension\CommonMark\Parser\Block\IndentedCodeStartParser;
+use League\CommonMark\Extension\CommonMark\Parser\Block\ListBlockStartParser;
+use League\CommonMark\Parser\Block\SkipLinesStartingWithLettersParser;
+use League\CommonMark\Extension\CommonMark\Parser\Block\ThematicBreakStartParser;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Emphasis;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Node\Inline\Newline;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
+use League\CommonMark\Node\Inline\Text;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\AutolinkParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\BacktickParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\BangParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\EntityParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\EscapableParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\HtmlInlineParser;
+use League\CommonMark\Parser\Inline\NewlineParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\OpenBracketParser;
+use League\CommonMark\Node\Node;
 use PHPUnit\Framework\TestCase;
 
 class CliExtensionTest extends TestCase
@@ -76,21 +75,20 @@ class CliExtensionTest extends TestCase
         $this->assertInlineRenderer($environment, Newline::class, NewlineRenderer::class);
         $this->assertInlineRenderer($environment, Link::class, LinkRenderer::class);
 
-        $blockParsers = array_map('get_class', iterator_to_array($environment->getBlockParsers()));
+        $blockParsers = array_map('get_class', iterator_to_array($environment->getBlockStartParsers()));
         self::assertSame([
-            BlockQuoteParser::class,
-            ATXHeadingParser::class,
-            FencedCodeParser::class,
-            HtmlBlockParser::class,
-            SetExtHeadingParser::class,
-            ThematicBreakParser::class,
-            ListParser::class,
-            IndentedCodeParser::class,
-            LazyParagraphParser::class,
+            SkipLinesStartingWithLettersParser::class,
+            BlockQuoteStartParser::class,
+            HeadingStartParser::class,
+            FencedCodeStartParser::class,
+            HtmlBlockStartParser::class,
+            ThematicBreakStartParser::class,
+            ListBlockStartParser::class,
+            IndentedCodeStartParser::class,
         ], $blockParsers);
 
-        $characters = ["\n", '`', '\\', '&', '<', '[', ']', '!'];
-        $expectedParsers = [
+        $inlineParsers = array_map('get_class', iterator_to_array($environment->getInlineParsers()));
+        self::assertSame([
             NewlineParser::class,
             BacktickParser::class,
             EscapableParser::class,
@@ -100,43 +98,40 @@ class CliExtensionTest extends TestCase
             CloseBracketParser::class,
             OpenBracketParser::class,
             BangParser::class,
-        ];
-        foreach ($characters as $character) {
-            $inlineParsers = array_map(
-                'get_class',
-                iterator_to_array($environment->getInlineParsersForCharacter($character))
-            );
-            foreach ($inlineParsers as $inlineParser) {
-                self::assertContains($inlineParser, $expectedParsers);
-            }
-        }
+        ], $inlineParsers);
     }
 
     /**
      * @param Environment $environment
-     * @param class-string<AbstractBlock> $blockClass
+     * @param class-string<Node> $blockClass
      * @param class-string<CliBlockRendererInterface> $rendererClass
      * @return void
      */
     private function assertBlockRenderer(Environment $environment, string $blockClass, string $rendererClass): void
     {
-        $classes = $environment->getBlockRenderersForClass($blockClass);
-        $classes = $classes instanceof \Traversable ? iterator_to_array($classes) : $classes;
-        $classes = array_map('get_class', $classes);
-        self::assertSame([$rendererClass], $classes);
+        $this->assertRenderer($environment, $blockClass, $rendererClass);
     }
 
     /**
      * @param Environment $environment
-     * @param class-string<AbstractBlock> $blockClass
+     * @param class-string<Node> $nodeClass
      * @param class-string<CliInlineRendererInterface> $rendererClass
      * @return void
      */
-    private function assertInlineRenderer(Environment $environment, string $blockClass, string $rendererClass): void
+    private function assertInlineRenderer(Environment $environment, string $nodeClass, string $rendererClass): void
     {
-        $classes = $environment->getInlineRenderersForClass($blockClass);
-        $classes = $classes instanceof \Traversable ? iterator_to_array($classes) : $classes;
-        $classes = array_map('get_class', $classes);
-        self::assertSame([$rendererClass], $classes);
+        $this->assertRenderer($environment, $nodeClass, $rendererClass);
+    }
+
+    /**
+     * Our renderer must be the first one tried, the CommonMark HTML renderers are only fallbacks.
+     *
+     * @param class-string<Node> $nodeClass
+     * @param class-string $rendererClass
+     */
+    private function assertRenderer(Environment $environment, string $nodeClass, string $rendererClass): void
+    {
+        $classes = array_map('get_class', iterator_to_array($environment->getRenderersForClass($nodeClass), false));
+        self::assertSame($rendererClass, $classes[0]);
     }
 }

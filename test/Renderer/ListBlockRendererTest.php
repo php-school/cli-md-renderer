@@ -9,12 +9,12 @@ use PhpSchool\CliMdRenderer\Renderer\ListItemRenderer;
 use PhpSchool\CliMdRenderer\Renderer\ParagraphRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Block\Element\ListBlock;
-use League\CommonMark\Block\Element\ListData;
-use League\CommonMark\Block\Element\ListItem;
-use League\CommonMark\Block\Element\Paragraph;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Text;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListData;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
+use League\CommonMark\Node\Block\Paragraph;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Node\Inline\Text;
 
 class ListBlockRendererTest extends AbstractRendererTest implements RendererTestInterface
 {
@@ -32,7 +32,7 @@ class ListBlockRendererTest extends AbstractRendererTest implements RendererTest
         $color = new Color();
         $color->setForceStyle(true);
         $environment = new Environment();
-        $environment->addInlineRenderer(Text::class, new TextRenderer());
+        $environment->addRenderer(Text::class, new TextRenderer());
         $cliRenderer = new CliRenderer($environment, $color);
 
         $this->assertEquals('', $renderer->render($list, $cliRenderer));
@@ -61,9 +61,9 @@ class ListBlockRendererTest extends AbstractRendererTest implements RendererTest
         $color->setForceStyle(true);
 
         $environment = (new Environment())
-            ->addBlockRenderer(Paragraph::class, new ParagraphRenderer())
-            ->addBlockRenderer(ListItem::class, new ListItemRenderer())
-            ->addInlineRenderer(Text::class, new TextRenderer());
+            ->addRenderer(Paragraph::class, new ParagraphRenderer())
+            ->addRenderer(ListItem::class, new ListItemRenderer())
+            ->addRenderer(Text::class, new TextRenderer());
 
         $cliRenderer = new CliRenderer($environment, $color);
 

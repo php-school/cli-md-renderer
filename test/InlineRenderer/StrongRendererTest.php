@@ -7,9 +7,9 @@ use PhpSchool\CliMdRenderer\InlineRenderer\StrongRenderer;
 use PhpSchool\CliMdRenderer\InlineRenderer\TextRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Strong;
-use League\CommonMark\Inline\Element\Text;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
+use League\CommonMark\Node\Inline\Text;
 
 class StrongRendererTest extends AbstractInlineRendererTest implements RendererTestInterface
 {
@@ -27,7 +27,7 @@ class StrongRendererTest extends AbstractInlineRendererTest implements RendererT
 
         $color = new Color();
         $color->setForceStyle(true);
-        $environment = (new Environment())->addInlineRenderer(Text::class, new TextRenderer());
+        $environment = (new Environment())->addRenderer(Text::class, new TextRenderer());
         $cliRenderer = new CliRenderer($environment, $color);
 
         $this->assertEquals(

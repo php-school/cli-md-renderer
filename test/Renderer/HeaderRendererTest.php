@@ -7,9 +7,9 @@ use PhpSchool\CliMdRenderer\InlineRenderer\TextRenderer;
 use PhpSchool\CliMdRenderer\Renderer\HeaderRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Block\Element\Heading;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Text;
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Node\Inline\Text;
 
 class HeaderRendererTest extends AbstractRendererTest implements RendererTestInterface
 {
@@ -22,13 +22,13 @@ class HeaderRendererTest extends AbstractRendererTest implements RendererTestInt
     {
         $class = $this->getRendererClass();
         $renderer = new $class();
-        $header = new Heading(2, 'HEADING!!');
+        $header = new Heading(2);
         $header->appendChild(new Text('HEADING!!'));
 
 
         $color = new Color();
         $color->setForceStyle(true);
-        $environment = (new Environment())->addInlineRenderer(Text::class, new TextRenderer());
+        $environment = (new Environment())->addRenderer(Text::class, new TextRenderer());
         $cliRenderer = new CliRenderer($environment, $color);
 
         $this->assertEquals(

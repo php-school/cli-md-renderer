@@ -8,11 +8,11 @@ use PhpSchool\CliMdRenderer\Renderer\ListItemRenderer;
 use PhpSchool\CliMdRenderer\Renderer\ParagraphRenderer;
 use PhpSchool\CliMdRendererTest\RendererTestInterface;
 use Colors\Color;
-use League\CommonMark\Block\Element\ListData;
-use League\CommonMark\Block\Element\ListItem;
-use League\CommonMark\Block\Element\Paragraph;
-use League\CommonMark\Environment;
-use League\CommonMark\Inline\Element\Text;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListData;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
+use League\CommonMark\Node\Block\Paragraph;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Node\Inline\Text;
 
 class ListItemRendererTest extends AbstractRendererTest implements RendererTestInterface
 {
@@ -34,8 +34,8 @@ class ListItemRendererTest extends AbstractRendererTest implements RendererTestI
         $color = new Color();
         $color->setForceStyle(true);
         $environment = (new Environment())
-            ->addBlockRenderer(Paragraph::class, new ParagraphRenderer())
-            ->addInlineRenderer(Text::class, new TextRenderer());
+            ->addRenderer(Paragraph::class, new ParagraphRenderer())
+            ->addRenderer(Text::class, new TextRenderer());
 
         $cliRenderer = new CliRenderer($environment, $color);
 
