@@ -20,6 +20,7 @@ use PhpSchool\CliMdRenderer\Renderer\ListItemRenderer;
 use PhpSchool\CliMdRenderer\Renderer\ParagraphRenderer;
 use Kadet\Highlighter\KeyLighter;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
+use League\CommonMark\Extension\CommonMark\Delimiter\Processor\EmphasisDelimiterProcessor;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
@@ -91,6 +92,9 @@ class CliExtension implements ConfigurableExtensionInterface
             ->addInlineParser(new InlineParser\CloseBracketParser(), 30)
             ->addInlineParser(new InlineParser\OpenBracketParser(), 20)
             ->addInlineParser(new InlineParser\BangParser(), 10)
+
+            ->addDelimiterProcessor(new EmphasisDelimiterProcessor('*'))
+            ->addDelimiterProcessor(new EmphasisDelimiterProcessor('_'))
 
             ->addRenderer(Document::class, new DocumentRenderer(), self::RENDERER_PRIORITY)
             ->addRenderer(Heading::class, new HeaderRenderer(), self::RENDERER_PRIORITY)
