@@ -2,32 +2,30 @@
 
 namespace PhpSchool\CliMdRenderer\Renderer;
 
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Block\Element\Heading;
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use PhpSchool\CliMdRenderer\CliRenderer;
-use League\CommonMark\Block\Renderer\BlockRendererInterface;
-use League\CommonMark\ElementRendererInterface;
-use League\CommonMark\Inline\Renderer\InlineRendererInterface;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
 
-class HeaderRenderer implements BlockRendererInterface
+class HeaderRenderer implements CliBlockRendererInterface
 {
-    public function render(AbstractBlock $block, ElementRendererInterface $renderer, bool $inTightList = false): string
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string
     {
-        if (!($renderer instanceof CliRenderer)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($renderer)));
+        if (!($childRenderer instanceof CliRenderer)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($childRenderer)));
         }
 
-        if (!($block instanceof Heading)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($block)));
+        if (!($node instanceof Heading)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($node)));
         }
 
-        $level  = $block->getLevel();
-        $text   = $renderer->renderInlines($block->children());
+        $level  = $node->getLevel();
+        $text   = $childRenderer->renderInlines($node->children());
 
         return sprintf(
             "\n%s %s\n",
-            $renderer->style(str_repeat('#', $level), 'dark_gray'),
-            $renderer->style($text, ['bold', 'cyan'])
+            $childRenderer->style(str_repeat('#', $level), 'dark_gray'),
+            $childRenderer->style($text, ['bold', 'cyan'])
         );
     }
 }

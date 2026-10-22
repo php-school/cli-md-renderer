@@ -5,14 +5,15 @@ namespace PhpSchool\CliMdRenderer;
 use PhpSchool\CliMdRenderer\InlineRenderer\CliInlineRendererInterface;
 use PhpSchool\CliMdRenderer\Renderer\CliBlockRendererInterface;
 use Colors\Color;
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Block\Renderer\BlockRendererInterface;
-use League\CommonMark\ElementRendererInterface;
-use League\CommonMark\EnvironmentInterface;
-use League\CommonMark\Inline\Element\AbstractInline;
+use League\CommonMark\Environment\EnvironmentInterface;
+use League\CommonMark\Node\Block\AbstractBlock;
+use League\CommonMark\Node\Inline\AbstractInline;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
+use League\Config\Exception\ConfigurationExceptionInterface;
 use RuntimeException;
 
-class CliRenderer implements ElementRendererInterface
+class CliRenderer implements ChildNodeRendererInterface
 {
     /**
      * @var EnvironmentInterface
@@ -38,7 +39,11 @@ class CliRenderer implements ElementRendererInterface
      */
     public function getOption(string $option, $default = null)
     {
-        return $this->environment->getConfig('renderer/' . $option, $default);
+        try {
+            return $this->environment->getConfiguration()->get('renderer/' . $option) ?? $default;
+        } catch (ConfigurationExceptionInterface $e) {
+            return $default;
+        }
     }
 
     /**
@@ -58,12 +63,15 @@ class CliRenderer implements ElementRendererInterface
             return $this->color->__toString();
         }
 
-        return $this->color->__invoke($string)->apply($colourOrStyle, $string);
+        /** @var string $styled colors.php is untyped, with a text argument it always returns a string */
+        $styled = $this->color->apply($colourOrStyle, $string);
+
+        return $styled;
     }
 
-    public function renderInline(AbstractInline $inline): string
+    public function renderInline(Node $inline): string
     {
-        $renderers = $this->environment->getInlineRenderersForClass(get_class($inline));
+        $renderers = $this->environment->getRenderersForClass(get_class($inline));
 
         foreach ($renderers as $renderer) {
             if (($result = $renderer->render($inline, $this)) !== null) {
@@ -77,7 +85,7 @@ class CliRenderer implements ElementRendererInterface
     }
 
     /**
-     * @param AbstractInline[] $inlines
+     * @param iterable<Node> $inlines
      *
      * @return string
      */
@@ -88,7 +96,7 @@ class CliRenderer implements ElementRendererInterface
         return implode(
             "",
             array_map(
-                function (AbstractInline $inline) {
+                function (Node $inline) {
                     return $this->renderInline($inline);
                 },
                 $inlines
@@ -96,13 +104,12 @@ class CliRenderer implements ElementRendererInterface
         );
     }
 
-    public function renderBlock(AbstractBlock $block, bool $inTightList = false): string
+    public function renderBlock(Node $block): string
     {
-        $renderers = $this->environment->getBlockRenderersForClass(\get_class($block));
+        $renderers = $this->environment->getRenderersForClass(get_class($block));
 
-        /** @var BlockRendererInterface $renderer */
         foreach ($renderers as $renderer) {
-            if (($result = $renderer->render($block, $this, $inTightList)) !== null) {
+            if (($result = $renderer->render($block, $this)) !== null) {
                 return $result;
             }
         }
@@ -113,22 +120,60 @@ class CliRenderer implements ElementRendererInterface
     }
 
     /**
-     * @param AbstractBlock[] $blocks
+     * @param iterable<Node> $blocks
      *
      * @return string
      */
-    public function renderBlocks(iterable $blocks, bool $inTightList = false): string
+    public function renderBlocks(iterable $blocks): string
     {
         $blocks = is_array($blocks) ? $blocks : iterator_to_array($blocks);
 
         return implode(
             "\n",
             array_map(
-                function (AbstractBlock $block) {
+                function (Node $block) {
                     return $this->renderBlock($block);
                 },
                 $blocks
             )
         );
+    }
+
+    /**
+     * Renders a list of nodes. Block nodes are separated by a newline, inline nodes are concatenated.
+     *
+     * @param iterable<Node> $nodes
+     */
+    public function renderNodes(iterable $nodes): string
+    {
+        $output = '';
+        $previous = null;
+
+        foreach ($nodes as $node) {
+            if ($node instanceof AbstractBlock) {
+                $output .= ($previous instanceof AbstractBlock ? $this->getBlockSeparator() : '') .
+                    $this->renderBlock($node);
+            } elseif ($node instanceof AbstractInline) {
+                $output .= $this->renderInline($node);
+            } else {
+                throw new RuntimeException(
+                    sprintf('Unable to find corresponding renderer for node type: "%s"', get_class($node))
+                );
+            }
+
+            $previous = $node;
+        }
+
+        return $output;
+    }
+
+    public function getBlockSeparator(): string
+    {
+        return "\n";
+    }
+
+    public function getInnerSeparator(): string
+    {
+        return "\n";
     }
 }

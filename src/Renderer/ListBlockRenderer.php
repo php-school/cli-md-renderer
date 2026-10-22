@@ -2,24 +2,23 @@
 
 namespace PhpSchool\CliMdRenderer\Renderer;
 
-use League\CommonMark\Block\Element\AbstractBlock;
 use PhpSchool\CliMdRenderer\CliRenderer;
-use League\CommonMark\Block\Element\ListBlock;
-use League\CommonMark\Block\Renderer\BlockRendererInterface;
-use League\CommonMark\ElementRendererInterface;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
 
-class ListBlockRenderer implements BlockRendererInterface
+class ListBlockRenderer implements CliBlockRendererInterface
 {
-    public function render(AbstractBlock $block, ElementRendererInterface $renderer, bool $inTightList = false): string
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string
     {
-        if (!($renderer instanceof CliRenderer)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($renderer)));
+        if (!($childRenderer instanceof CliRenderer)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($childRenderer)));
         }
 
-        if (!($block instanceof ListBlock)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($block)));
+        if (!($node instanceof ListBlock)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($node)));
         }
 
-        return $renderer->renderBlocks($block->children());
+        return $childRenderer->renderBlocks($node->children());
     }
 }

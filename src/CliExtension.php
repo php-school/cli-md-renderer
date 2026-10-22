@@ -19,27 +19,54 @@ use PhpSchool\CliMdRenderer\Renderer\ListBlockRenderer;
 use PhpSchool\CliMdRenderer\Renderer\ListItemRenderer;
 use PhpSchool\CliMdRenderer\Renderer\ParagraphRenderer;
 use Kadet\Highlighter\KeyLighter;
-use League\CommonMark\Block\Element\Document;
-use League\CommonMark\Block\Element\FencedCode;
-use League\CommonMark\Block\Element\Heading;
-use League\CommonMark\Block\Element\ListBlock;
-use League\CommonMark\Block\Element\ListItem;
-use League\CommonMark\Block\Element\Paragraph;
-use League\CommonMark\Block\Element\ThematicBreak;
-use League\CommonMark\Block\Parser as BlockParser;
-use League\CommonMark\ConfigurableEnvironmentInterface;
-use League\CommonMark\Extension\ExtensionInterface;
-use League\CommonMark\Inline\Element\Code;
-use League\CommonMark\Inline\Element\Emphasis;
-use League\CommonMark\Inline\Element\Link;
-use League\CommonMark\Inline\Element\Newline;
-use League\CommonMark\Inline\Element\Strong;
-use League\CommonMark\Inline\Element\Text;
-use League\CommonMark\Inline\Parser as InlineParser;
+use League\CommonMark\Environment\EnvironmentBuilderInterface;
+use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
+use League\CommonMark\Extension\CommonMark\Node\Block\ThematicBreak;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Emphasis;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
+use League\CommonMark\Extension\CommonMark\Parser\Block as BlockParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline as InlineParser;
+use League\CommonMark\Extension\ConfigurableExtensionInterface;
+use League\CommonMark\Node\Block\Document;
+use League\CommonMark\Node\Block\Paragraph;
+use League\CommonMark\Node\Inline\Newline;
+use League\CommonMark\Node\Inline\Text;
+use League\CommonMark\Parser\Inline\NewlineParser;
+use League\Config\ConfigurationBuilderInterface;
+use Nette\Schema\Expect;
 
-class CliExtension implements ExtensionInterface
+class CliExtension implements ConfigurableExtensionInterface
 {
-    public function register(ConfigurableEnvironmentInterface $environment): void
+    /**
+     * Take precedence over any HTML renderers registered by other extensions (e.g. the CommonMark core extension).
+     */
+    private const RENDERER_PRIORITY = 10;
+
+    public function configureSchema(ConfigurationBuilderInterface $builder): void
+    {
+        //required by the CommonMark list parser, identical to the schema of the CommonMark core extension
+        $builder->addSchema('commonmark', Expect::structure([
+            'use_asterisk' => Expect::bool(true),
+            'use_underscore' => Expect::bool(true),
+            'enable_strong' => Expect::bool(true),
+            'enable_em' => Expect::bool(true),
+            'unordered_list_markers' => Expect::listOf('string')
+                ->min(1)
+                ->default(['*', '+', '-'])
+                ->mergeDefaults(false),
+        ]));
+
+        $builder->addSchema('renderer', Expect::structure([
+            'width' => Expect::int(30),
+        ])->otherItems(Expect::mixed()));
+    }
+
+    public function register(EnvironmentBuilderInterface $environment): void
     {
         $codeRender = new FencedCodeRenderer();
         $keyLighter = new KeyLighter();
@@ -47,17 +74,15 @@ class CliExtension implements ExtensionInterface
         $codeRender->addSyntaxHighlighter('php', new PhpHighlighter($keyLighter));
 
         $environment
-            ->addBlockParser(new BlockParser\BlockQuoteParser(), 70)
-            ->addBlockParser(new BlockParser\ATXHeadingParser(), 60)
-            ->addBlockParser(new BlockParser\FencedCodeParser(), 50)
-            ->addBlockParser(new BlockParser\HtmlBlockParser(), 40)
-            ->addBlockParser(new BlockParser\SetExtHeadingParser(), 30)
-            ->addBlockParser(new BlockParser\ThematicBreakParser(), 20)
-            ->addBlockParser(new BlockParser\ListParser(), 10)
-            ->addBlockParser(new BlockParser\IndentedCodeParser(), -100)
-            ->addBlockParser(new BlockParser\LazyParagraphParser(), -200)
+            ->addBlockStartParser(new BlockParser\BlockQuoteStartParser(), 70)
+            ->addBlockStartParser(new BlockParser\HeadingStartParser(), 60)
+            ->addBlockStartParser(new BlockParser\FencedCodeStartParser(), 50)
+            ->addBlockStartParser(new BlockParser\HtmlBlockStartParser(), 40)
+            ->addBlockStartParser(new BlockParser\ThematicBreakStartParser(), 20)
+            ->addBlockStartParser(new BlockParser\ListBlockStartParser(), 10)
+            ->addBlockStartParser(new BlockParser\IndentedCodeStartParser(), -100)
 
-            ->addInlineParser(new InlineParser\NewlineParser(), 200)
+            ->addInlineParser(new NewlineParser(), 200)
             ->addInlineParser(new InlineParser\BacktickParser(), 150)
             ->addInlineParser(new InlineParser\EscapableParser(), 80)
             ->addInlineParser(new InlineParser\EntityParser(), 70)
@@ -67,19 +92,19 @@ class CliExtension implements ExtensionInterface
             ->addInlineParser(new InlineParser\OpenBracketParser(), 20)
             ->addInlineParser(new InlineParser\BangParser(), 10)
 
-            ->addBlockRenderer(Document::class, new DocumentRenderer())
-            ->addBlockRenderer(Heading::class, new HeaderRenderer())
-            ->addBlockRenderer(ThematicBreak::class, new HorizontalRuleRenderer())
-            ->addBlockRenderer(Paragraph::class, new ParagraphRenderer())
-            ->addBlockRenderer(FencedCode::class, $codeRender)
-            ->addBlockRenderer(ListBlock::class, new ListBlockRenderer())
-            ->addBlockRenderer(ListItem::class, new ListItemRenderer())
+            ->addRenderer(Document::class, new DocumentRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(Heading::class, new HeaderRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(ThematicBreak::class, new HorizontalRuleRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(Paragraph::class, new ParagraphRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(FencedCode::class, $codeRender, self::RENDERER_PRIORITY)
+            ->addRenderer(ListBlock::class, new ListBlockRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(ListItem::class, new ListItemRenderer(), self::RENDERER_PRIORITY)
 
-            ->addInlineRenderer(Text::class, new TextRenderer())
-            ->addInlineRenderer(Code::class, new CodeRenderer())
-            ->addInlineRenderer(Emphasis::class, new EmphasisRenderer())
-            ->addInlineRenderer(Strong::class, new StrongRenderer())
-            ->addInlineRenderer(Newline::class, new NewlineRenderer())
-            ->addInlineRenderer(Link::class, new LinkRenderer());
+            ->addRenderer(Text::class, new TextRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(Code::class, new CodeRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(Emphasis::class, new EmphasisRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(Strong::class, new StrongRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(Newline::class, new NewlineRenderer(), self::RENDERER_PRIORITY)
+            ->addRenderer(Link::class, new LinkRenderer(), self::RENDERER_PRIORITY);
     }
 }

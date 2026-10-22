@@ -2,25 +2,23 @@
 
 namespace PhpSchool\CliMdRenderer\Renderer;
 
-use League\CommonMark\Block\Element\AbstractBlock;
-use League\CommonMark\Block\Element\Paragraph;
+use League\CommonMark\Node\Block\Paragraph;
 use PhpSchool\CliMdRenderer\CliRenderer;
-use League\CommonMark\Block\Renderer\BlockRendererInterface;
-use League\CommonMark\ElementRendererInterface;
-use League\CommonMark\Inline\Renderer\InlineRendererInterface;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
 
-class ParagraphRenderer implements BlockRendererInterface
+class ParagraphRenderer implements CliBlockRendererInterface
 {
-    public function render(AbstractBlock $block, ElementRendererInterface $renderer, bool $inTightList = false): string
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string
     {
-        if (!($renderer instanceof CliRenderer)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($renderer)));
+        if (!($childRenderer instanceof CliRenderer)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($childRenderer)));
         }
 
-        if (!($block instanceof Paragraph)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($block)));
+        if (!($node instanceof Paragraph)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible block type: "%s"', get_class($node)));
         }
 
-        return $renderer->renderInlines($block->children()) . "\n";
+        return $childRenderer->renderInlines($node->children()) . "\n";
     }
 }

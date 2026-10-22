@@ -2,23 +2,23 @@
 
 namespace PhpSchool\CliMdRenderer\InlineRenderer;
 
-use League\CommonMark\ElementRendererInterface;
-use League\CommonMark\Inline\Element\AbstractInline;
-use League\CommonMark\Inline\Element\Strong;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 use PhpSchool\CliMdRenderer\CliRenderer;
 
 class StrongRenderer implements CliInlineRendererInterface
 {
-    public function render(AbstractInline $inline, ElementRendererInterface $renderer): string
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string
     {
-        if (!($renderer instanceof CliRenderer)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($renderer)));
+        if (!($childRenderer instanceof CliRenderer)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible renderer type: "%s"', get_class($childRenderer)));
         }
 
-        if (!($inline instanceof Strong)) {
-            throw new \InvalidArgumentException(sprintf('Incompatible inline type: "%s"', get_class($inline)));
+        if (!($node instanceof Strong)) {
+            throw new \InvalidArgumentException(sprintf('Incompatible inline type: "%s"', get_class($node)));
         }
 
-        return $renderer->style($renderer->renderInlines($inline->children()), 'bold');
+        return $childRenderer->style($childRenderer->renderInlines($node->children()), 'bold');
     }
 }
